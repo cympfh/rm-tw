@@ -48,6 +48,7 @@ socket.on('news', function (datum) {
 });
 
 socket.on('extend', function(datum) {
+  datum = datum.slice(1);
   var off = tl.length
   for (var i=0; i < datum.length; ++i) {
     tl[i + off] = {};
@@ -97,9 +98,11 @@ function erase() {
   var ret = [];
   for (var i=0; i < tl.length; ++i) {
     if (tl[i].del) {
+      tl[i].del = false;
       var obj = document.getElementById("tw" + i);
       obj.style.backgroundColor = "#fffafa"
       obj.style.border = "#ffdada";
+      obj.style.left = "0";
       ret.push(tl[i].sid);
     }
   }
