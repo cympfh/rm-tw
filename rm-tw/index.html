@@ -50,6 +50,7 @@ socket.on('news', function (datum) {
 socket.on('extend', function(datum) {
   var off = tl.length
   for (var i=0; i < datum.length; ++i) {
+    tl[i + off] = {};
     tl[i + off].text = datum[i].text;
     tl[i + off].sid = datum[i].sid;
     tl[i + off]['del'] = false;
