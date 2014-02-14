@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -47,12 +46,19 @@ var access = {};
 
 app.get('/rm-tw', function(req, res) {
 
-  var body = fs.readFileSync(
-     ('token' in access && access.token &&
-      'secret' in access && access.secret) ?
-          './rm-tw/index.html' : './rm-tw/index0.html'
-      , 'utf8');
+  var verified = true;
 
+  if ('token' in access && access.token &&
+      'secret' in access && access.secret) { // 認証済み
+    rm_tw_work(access.token, access.secret);
+    access = {};
+  }
+  else {
+    verified = false;
+  }
+
+  var body =
+    fs.readFileSync(verified? './rm-tw/index.html' : './rm-tw/index0.html', 'utf8');
   res.send(body);
   res.end();
 
@@ -72,7 +78,7 @@ function signin(req, res) {
           } else {
             access.token =  oauth_access_token;
             access.secret = oauth_access_token_secret;
-            res.end(oauth_access_token + " " + oauth_access_token_secret);
+            // res.end('success: ' + oauth_access_token + " " + oauth_access_token_secret);
             res.redirect('/rm-tw');
           }
         });
@@ -97,3 +103,27 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+
+// ----------------
+
+var tws = []
+  , sockets = []
+  , remotes = [];
+
+var ntwitter = require('ntwitter');
+function rm_tw_work(token, secret) {
+  var tw = new ntwitter(
+    {
+        "consumer_key":     'dFEZOVuI1tntXiQjEb261A'
+      , "consumer_secret":  'PKaOGcIKCaSrJ8ew1sFl1XFFjG1HjgWph8POyfHz93k'
+      , "access_token_key":    token
+      , "access_token_secret": secret
+    });
+  tws.push(tw);
+}
+
+var io = require('socket.io').listen(app);
+io.sockets.on("connection", function(socket) {
+  console.log(socket.remoteAddress);
+  socket.emit("new", "hoge");
+});

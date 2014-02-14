@@ -1,6 +1,13 @@
-
 <title>rm tw</title>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+var socket = io.connect("http://127.0.0.1");
+socket.on('new', function (data) {
+  X.innerHTML = data;
+}
+
+</script>
 <body>
 <code>$ rm -rf tw/*</code>
-
-<a href='/signin/twitter'>to auth</a>
+<div id=X></div>
