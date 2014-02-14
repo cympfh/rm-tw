@@ -21,7 +21,7 @@ var ID = "@ID@";
 var tl = [];
 
 var socket = io.connect('http://unddich.herokuapp.com/');
-socket.on('data', function (datum) {
+socket.on('news', function (datum) {
 
   tl = datum;
   for (var i=0; i < tl.length; ++i)
@@ -33,6 +33,35 @@ socket.on('data', function (datum) {
     var t = document.createElement('div');
     t.className = "tw";
     t.id = "tw" + i;
+    t.innerHTML = d.text + ' / ' + d.sid;
+    t.style.position = "relative";
+    t.style.left = "0";
+    t.style.top = "0";
+
+    t.onclick = function() {
+      click(this.id);
+      return false;
+    }
+
+    X.appendChild(t);
+  }
+});
+
+socket.on('extend', function(datum) {
+  var off = tl.length
+  for (var i=0; i < datum.length; ++i) {
+    tl[i + off].text = datum[i].text;
+    tl[i + off].sid = datum[i].sid;
+    tl[i + off]['del'] = false;
+    tl[i]['del'] = false;
+  }
+
+  for (var i=0; i < datum.length; ++i) {
+    var d = tl[(i+off)];
+
+    var t = document.createElement('div');
+    t.className = "tw";
+    t.id = "tw" + (i+off);
     t.innerHTML = d.text + ' / ' + d.sid;
     t.style.position = "relative";
     t.style.left = "0";
@@ -90,7 +119,7 @@ function extend() {
 <legend style="border: 1px #f0f0f0 solid; background-color: #fadada; position: fixed; left:500px; top:30px;">
 <input type="button" value="erase" onclick="erase()">
 <input type="button" value="refresh" onclick="refresh()">
-<!-- <input type="button" value="extend" onclick="extend()"> -->
+<input type="button" value="extend" onclick="extend()">
 </legend>
 </form>
 

@@ -166,14 +166,14 @@ io.sockets.on("connection", function(socket) {
     var options = { count: 200 };
     var id = data.ID;
     if ('max' in data) {
-      options.max = data.max;
+      options.max_id = data.max;
     }
     if (!(id in tws)) return;
 
     get_tweet(tws[id]
       , options
       , function(tws) {
-          socket.emit("data", tws) });
+          socket.emit(('max' in data) ? 'extend' : 'news', tws) });
   });
 
   socket.on('destroy', function(data) {
