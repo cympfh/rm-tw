@@ -2,13 +2,6 @@
  * Module dependencies.
  */
 
-/*
-Object.prototype.toString = function(){
-  var s=[];
-  for(var i in this)if(this.hasOwnProperty(i))s.push(i+":"+this[i]);
-  return "{"+s.join(",")+"}" };
-*/
-
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
