@@ -45,7 +45,7 @@ socket.on('data', function (datum) {
 
 function click(id) {
   var idx = +id.slice(2)
-  if (tl[idx]) {
+  if (tl[idx].del) {
     tl[idx].del = false;
     document.getElementById(id).style.left = 0;
   } else {
