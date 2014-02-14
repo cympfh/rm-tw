@@ -144,7 +144,7 @@ function get_tweet(tw, cont) {
                      .replace(/&lt;/g, "<")
                      .replace(/&gt;/g, ">")
                      .replace(/&amp;/g, "&");
-                  var sid = data.id_str;
+                  var sid = d.id_str;
                   return {text: text, sid: sid};
                 });
                 cont(data);

@@ -29,24 +29,31 @@ socket.on('data', function (datum) {
 
     var t = document.createElement('div');
     t.className = "tw";
+    t.id = "tw" + i;
     t.innerHTML = d.text + ' / ' + d.sid;
     t.style.position = "relative";
     t.style.left = "0";
     t.style.top = "0";
 
     t.onclick = function() {
-      if (tl[i]) {
-        tl[i] = false;
-        tl[i].style.left = "50px";
-      } else {
-        tl[i] = true;
-        tl[i].style.left = "0";
-      }
+      click(this.id);
+      return false;
     }
 
     X.appendChild(t);
   }
 });
+
+function click(id) {
+  var idx = +id.slice(2)
+  if (tl[idx]) {
+    tl[idx] = false;
+    document.getElementById(id).style.left = 0;
+  } else {
+    tl[idx] = true;
+    document.getElementById(id).style.left = "50px";
+  }
+}
 
 </script>
 <body>
