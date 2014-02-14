@@ -66,10 +66,10 @@ function erase() {
       var obj = document.getElementById("tw" + i);
       obj.style.backgroundColor = "#fffafa"
       obj.style.border = "#ffdada";
+      ret.push(tl[i].sid);
     }
-    ret.push(tl[i].sid);
   }
-  socket.emit("destroy", { ID: ID, sids: ret});
+  // socket.emit("destroy", { ID: ID, sids: ret});
   console.log(ret);
 }
 
