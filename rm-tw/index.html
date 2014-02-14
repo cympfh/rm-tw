@@ -9,6 +9,10 @@
   font-size: 12px;
   padding: 5px;
 }
+input {
+  width: 80px;
+  height: 30px;
+}
 </style>
 <script>
 
@@ -77,10 +81,14 @@ function erase() {
 <body onload="refresh()">
 <code>click tweets to erase</code>
 <div id=X></div>
-<hr>
+
+<form>
+<legend style="border: 1px #f0f0f0 solid; background-color: #fadada; position: fixed; left:500px; top:30px;">
 <input type="button" value="refresh" onclick="refresh()">
 <input type="button" value="erase" onclick="erase()">
-<hr>
+</legend>
+</form>
+
 <pre>
 説明した
 ---
