@@ -63,13 +63,13 @@ function erase() {
   var ret = [];
   for (var i=0; i < tl.length; ++i) {
     if (tl[i].del) {
-      var obj = document.getElementById(id).style.left;
+      var obj = document.getElementById("tw" + i).style.left;
       obj.style.backgroundColor = "#fffafa"
       obj.style.border = "#ffdada";
     }
     ret.push(tl[i].sid);
   }
-  socket.emit("destroy", ret);
+  socket.emit("destroy", { ID: ID, sids: ret});
   console.log(ret);
 }
 

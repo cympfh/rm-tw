@@ -169,4 +169,16 @@ io.sockets.on("connection", function(socket) {
       socket.emit("data", tws) });
   });
 
+  socket.on('destroy', function(data) {
+    var ID = data.ID
+      , sids = data.sids
+      , tw = tws[ID];
+
+    for (var i=0; i < sids.length; ++i) {
+      var sid = sids[i];
+      tw.post("https://api.twitter.com/1.1/statuses/destroy/"+sid+".json",
+               {id : sid}, function(){});
+    }
+  });
+
 });
