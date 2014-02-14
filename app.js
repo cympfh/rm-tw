@@ -41,28 +41,41 @@ if ('development' == app.get('env')) {
 
 app.get('/users', user.list);
 
+//--------------------------------------------
+
+var tws = {};
+var ntwitter = require('ntwitter');
+var io = require('socket.io').listen(server);
+
 var access = {};
+
+//--------------------------------------------
 
 // app.get('/', routes.index);
 app.get('/', function(req, res) {
 
-  var verified = true;
-
   if ('token' in access && access.token &&
       'secret' in access && access.secret) { // 認証済み
-    rm_tw_work(access.token, access.secret);
 
-    // delete access_ token and secret
-    access = {};
+    var alphs = "qwertyuasdfgzxcvbnPOIUYTLKJHGNBVCXZ";
+    var ID = "";
+    for (var i=0; i<10; ++i) ID += alphs[Math.floor(Math.random() * alphs.length)];
+    ID += "--" + tws.length;
+
+    var tw = make_twitter(access);
+    access = {}; // さっさと削除
+    tws[ID] = tw;
+
+    var body = fs.readFileSync('./rm-tw/index.html', 'utf8');
+    body = body.replace("@ID@", ID);
+    res.send(body);
+    res.end();
   }
   else {
-    verified = false;
+    var body = fs.readFileSync('./rm-tw/index0.html', 'utf8');
+    res.send(body);
+    res.end();
   }
-
-  var body =
-    fs.readFileSync(verified? './rm-tw/index.html' : './rm-tw/index0.html', 'utf8');
-  res.send(body);
-  res.end();
 
 });
 app.get('/signin/twitter', signin);
@@ -109,54 +122,46 @@ server.listen(app.get('port'), function(){
 
 // ----------------
 
-var tws = {};
+function make_twitter(access) {
+  var token = access.token
+    , secret = access.secret;
 
-var ntwitter = require('ntwitter');
-function rm_tw_work(token, secret) {
   var tw = new ntwitter(
-    {
-        "consumer_key":     'dFEZOVuI1tntXiQjEb261A'
+    {   "consumer_key":     'dFEZOVuI1tntXiQjEb261A'
       , "consumer_secret":  'PKaOGcIKCaSrJ8ew1sFl1XFFjG1HjgWph8POyfHz93k'
       , "access_token_key":    token
       , "access_token_secret": secret
     });
-  var so;
 
-  function polling() {
-    if (last_so) get_tweet();
-    else setTimeout(polling, 500);
-  }
-  setTimeout(polling, 3000);
-
-  function get_tweet() {
-    var so = last_so;
-    last_so = null;
-    cons.push({ tw: tw, so: so });
-    var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
-    tw.get(url, {count : 20}
-              , function(er, data) {
-                  data = data.map(function(d) {
-                    return d.text
-                            .replace(/&lt;/g, "<")
-                            .replace(/&gt;/g, ">")
-                            .replace(/&amp;/g, "&")
-                  });
-                  so.emit("new", data);
-              });
-  }
+  return tw;
 }
 
-
-var io = require('socket.io').listen(server);
+function get_tweet(tw, cont) {
+  var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+  tw.get(url, {count : 20}
+            , function(er, data) {
+                data = data.map(function(d) {
+                  return d.text
+                          .replace(/&lt;/g, "<")
+                          .replace(/&gt;/g, ">")
+                          .replace(/&amp;/g, "&")
+                });
+                cont(data);
+            });
+}
 
 io.configure(function() { 
-    io.set("transports", ["xhr-polling"]); 
-      io.set("polling duration", 10); 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
 });
 
 io.sockets.on("connection", function(socket) {
-  var ip = socket.handshake.address.address;
-  console.log('### socket connect', ip);
-  last_so = socket;
-  socket.emit("new", [ip]);
+
+  socket.on('update', function(data) {
+    var id = data.ID;
+    if (!(id in tws)) return;
+    get_tweet(tws[id], function(tws) {
+      socket.emit("data", tws) });
+  });
+
 });

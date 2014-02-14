@@ -12,8 +12,11 @@
 </style>
 <script>
 
+var ID = @ID@;
+
 var socket = io.connect('http://unddich.herokuapp.com/');
-socket.on('new', function (tws) {
+socket.emit('update', { ID : ID });
+socket.on('data', function (tws) {
   for (var i=0; i<tws.length; ++i) {
     var tw = tws[i];
     X.innerHTML += '<tw class=tw>' + tw + '</div>'
