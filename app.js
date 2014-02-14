@@ -81,7 +81,7 @@ function signin(req, res) {
             access.token =  oauth_access_token;
             access.secret = oauth_access_token_secret;
             // res.end('success: ' + oauth_access_token + " " + oauth_access_token_secret);
-            res.redirect('/rm-tw');
+            res.redirect('/');
           }
         });
     } else {
@@ -109,8 +109,7 @@ server.listen(app.get('port'), function(){
 
 // ----------------
 
-var cons = [];
-var last_so;
+var tws = {};
 
 var ntwitter = require('ntwitter');
 function rm_tw_work(token, secret) {
@@ -156,6 +155,8 @@ io.configure(function() {
 });
 
 io.sockets.on("connection", function(socket) {
-  console.log('### socket connect', socket.handshake.address.address)
+  var ip = socket.handshake.address.address;
+  console.log('### socket connect', ip);
   last_so = socket;
+  socket.emit("new", [ip]);
 });
