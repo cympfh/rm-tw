@@ -39,12 +39,12 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
 app.get('/users', user.list);
 
 var access = {};
 
-app.get('/rm-tw', function(req, res) {
+// app.get('/', routes.index);
+app.get('/', function(req, res) {
 
   var verified = true;
 
@@ -156,6 +156,6 @@ io.configure(function() {
 });
 
 io.sockets.on("connection", function(socket) {
-  console.log('### socket connect')
+  console.log('### socket connect', socket.handshake.address.address)
   last_so = socket;
 });
