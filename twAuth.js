@@ -4,7 +4,8 @@ var oauth = new (require('oauth').OAuth)(
   , 'dFEZOVuI1tntXiQjEb261A'
   , 'PKaOGcIKCaSrJ8ew1sFl1XFFjG1HjgWph8POyfHz93k'
   , '1.0'
-  , 'http://unddich.herokuapp.com/rm-tw'
+  //, 'http://unddich.herokuapp.com/signin/twitter'
+  , 'http://localhost:3000/signin/twitter'
   , 'HMAC-SHA1'
   );
 
@@ -22,10 +23,10 @@ function signin(req, res) {
           if (error) {
             res.send(error, 500);
           } else {
-            // req.session.user = results.screen_name;
-            console.log("@@@", oauth_access_token, oauth_access_token_secret);
+            acess.token = coauth_access_token;
+            acces.secret = oauth_access_token_secret;
             res.end(oauth_access_token + " " + oauth_access_token_secret);
-            // res.redirect('/');
+            res.redirect('/rm-tw');
           }
         });
     } else {

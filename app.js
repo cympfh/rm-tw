@@ -32,9 +32,20 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
+var access = {};
+
 app.get('/rm-tw', function(req, res) {
-  var body = fs.readFileSync('./public/rm-tw.html', 'utf8');
+
+  var body;
+  if ('token' in access && access.token &&
+      'secret' in access && acess.secret) {
+    body = fs.readFileSync('./public/rm-tw.html', 'utf8');
+  } else {
+    body = fs.readFileSync('./public/rm-tw-notyet.html', 'utf8');
+  }
   res.send(body);
+  res.end();
+
 });
 app.get('/signin/twitter', require('./twAuth'));
 

@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+kbd {
+  display: block;
+  border: 1px gray solid;
+}
