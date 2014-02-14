@@ -47,8 +47,6 @@ var tws = {};
 var ntwitter = require('ntwitter');
 var io = require('socket.io').listen(server);
 
-var access = {};
-
 //--------------------------------------------
 
 // app.get('/', routes.index);
@@ -60,7 +58,6 @@ app.get('/', function(req, res) {
     var alphs = "qwertyuasdfgzxcvbnPOIUYTLKJHGNBVCXZ";
     var ID = "";
     for (var i=0; i<10; ++i) ID += alphs[Math.floor(Math.random() * alphs.length)];
-    ID += "--" + tws.length;
 
     var tw = make_twitter(access);
     access = {}; // さっさと削除
