@@ -77,6 +77,10 @@ function erase() {
   console.log(ret);
 }
 
+function extend() {
+  socket.emit("update", { ID: ID, max: tl[tl.length-1].sid });
+}
+
 </script>
 <body onload="refresh()">
 <code>click tweets to erase</code>
@@ -84,8 +88,9 @@ function erase() {
 
 <form>
 <legend style="border: 1px #f0f0f0 solid; background-color: #fadada; position: fixed; left:500px; top:30px;">
-<input type="button" value="refresh" onclick="refresh()">
 <input type="button" value="erase" onclick="erase()">
+<input type="button" value="refresh" onclick="refresh()">
+<input type="button" value="extend" onclick="extend()">
 </legend>
 </form>
 

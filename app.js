@@ -134,9 +134,9 @@ function make_twitter(access) {
   return tw;
 }
 
-function get_tweet(tw, cont) {
+function get_tweet(tw, options, cont) {
   var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
-  tw.get(url, {count : 20}
+  tw.get(url, options
             , function(er, data) {
                 data = data.map(function(d) {
                   var text =
@@ -163,10 +163,17 @@ io.configure(function() {
 io.sockets.on("connection", function(socket) {
 
   socket.on('update', function(data) {
+    var options = { count: 200 };
     var id = data.ID;
+    if ('max' in data) {
+      options.max = data.max;
+    }
     if (!(id in tws)) return;
-    get_tweet(tws[id], function(tws) {
-      socket.emit("data", tws) });
+
+    get_tweet(tws[id]
+      , options
+      , function(tws) {
+          socket.emit("data", tws) });
   });
 
   socket.on('destroy', function(data) {
