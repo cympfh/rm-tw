@@ -123,12 +123,15 @@ function rm_tw_work(token, secret) {
     });
   var so;
 
-  setTimeout(function() {
-    get_tweet();
-  }, 1000);
+  function polling() {
+    if (last_so) get_tweet();
+    else setTimeout(polling, 500);
+  }
+  setTimeout(polling, 3000);
 
   function get_tweet() {
     var so = last_so;
+    last_so = null;
     cons.push({ tw: tw, so: so });
     var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
     tw.get(url, {count : 20}
