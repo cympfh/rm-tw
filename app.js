@@ -139,10 +139,13 @@ function get_tweet(tw, cont) {
   tw.get(url, {count : 20}
             , function(er, data) {
                 data = data.map(function(d) {
-                  return d.text
-                          .replace(/&lt;/g, "<")
-                          .replace(/&gt;/g, ">")
-                          .replace(/&amp;/g, "&")
+                  var text =
+                    d.text
+                     .replace(/&lt;/g, "<")
+                     .replace(/&gt;/g, ">")
+                     .replace(/&amp;/g, "&");
+                  var sid = data.id_str;
+                  return {text: text, sid: sid};
                 });
                 cont(data);
             });
@@ -161,7 +164,6 @@ io.sockets.on("connection", function(socket) {
 
   socket.on('update', function(data) {
     var id = data.ID;
-    socket.emit("data", [id, (id in tws)]);
     if (!(id in tws)) return;
     get_tweet(tws[id], function(tws) {
       socket.emit("data", tws) });

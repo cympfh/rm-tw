@@ -14,12 +14,37 @@
 
 var ID = "@ID@";
 
+var tl = [];
+
 var socket = io.connect('http://unddich.herokuapp.com/');
 socket.emit('update', { ID : ID });
-socket.on('data', function (tws) {
-  for (var i=0; i<tws.length; ++i) {
-    var tw = tws[i];
-    X.innerHTML += '<tw class=tw>' + tw + '</div>'
+socket.on('data', function (datum) {
+
+  tl = datum;
+  for (var i=0; i < tl.length; ++i)
+    tl[i]['del'] = false;
+
+  for (var i=0; i < tl.length; ++i) {
+    var d = tl[i];
+
+    var t = document.createElement('div');
+    t.className = "tw";
+    t.innerHTML = d.text + ' / ' + d.sid;
+    t.style.position = "relative";
+    t.style.left = "0";
+    t.style.top = "0";
+
+    t.onclick = function() {
+      if (tl[i]) {
+        tl[i] = false;
+        tl[i].style.left = "50px";
+      } else {
+        tl[i] = true;
+        tl[i].style.left = "0";
+      }
+    }
+
+    X.appendChild(t);
   }
 });
 
