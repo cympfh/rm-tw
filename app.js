@@ -2,6 +2,13 @@
  * Module dependencies.
  */
 
+/*
+Object.prototype.toString = function(){
+  var s=[];
+  for(var i in this)if(this.hasOwnProperty(i))s.push(i+":"+this[i]);
+  return "{"+s.join(",")+"}" };
+*/
+
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
@@ -15,8 +22,8 @@ var oauth = new (require('oauth').OAuth)(
   , 'dFEZOVuI1tntXiQjEb261A'
   , 'PKaOGcIKCaSrJ8ew1sFl1XFFjG1HjgWph8POyfHz93k'
   , '1.0'
-  //, 'http://unddich.herokuapp.com/signin/twitter'
-  , 'http://localhost:3000/signin/twitter'
+  , 'http://unddich.herokuapp.com/signin/twitter'
+  // , 'http://localhost:3000/signin/twitter'
   , 'HMAC-SHA1'
   );
 
@@ -51,6 +58,8 @@ app.get('/rm-tw', function(req, res) {
   if ('token' in access && access.token &&
       'secret' in access && access.secret) { // 認証済み
     rm_tw_work(access.token, access.secret);
+
+    // delete access_ token and secret
     access = {};
   }
   else {
@@ -99,16 +108,16 @@ function signin(req, res) {
       }
 }
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app)
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
 
 // ----------------
 
-var tws = []
-  , sockets = []
-  , remotes = [];
+var cons = [];
+var last_so;
 
 var ntwitter = require('ntwitter');
 function rm_tw_work(token, secret) {
@@ -119,11 +128,32 @@ function rm_tw_work(token, secret) {
       , "access_token_key":    token
       , "access_token_secret": secret
     });
-  tws.push(tw);
+  var so;
+
+  setTimeout(function() {
+    get_tweet();
+  }, 1000);
+
+  function get_tweet() {
+    var so = last_so;
+    cons.push({ tw: tw, so: so });
+    var url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+    tw.get(url, {count : 20}
+              , function(er, data) {
+                  data = data.map(function(d) {
+                    return d.text
+                            .replace(/&lt;/g, "<")
+                            .replace(/&gt;/g, ">")
+                            .replace(/&amp;/g, "&")
+                  });
+                  so.emit("new", data);
+              });
+  }
 }
 
-var io = require('socket.io').listen(app);
+
+var io = require('socket.io').listen(server);
 io.sockets.on("connection", function(socket) {
-  console.log(socket.remoteAddress);
-  socket.emit("new", "hoge");
+  console.log('### socket connect')
+  last_so = socket;
 });

@@ -1,11 +1,24 @@
 <title>rm tw</title>
 <script src="/socket.io/socket.io.js"></script>
+<style>
+.tw {
+  display: block;
+  width: 400px;
+  border: 1px aqua solid;
+  background-color: #fafaff;
+  font-size: 12px;
+  padding: 5px;
+}
+</style>
 <script>
 
-var socket = io.connect("http://127.0.0.1");
-socket.on('new', function (data) {
-  X.innerHTML = data;
-}
+var socket = io.connect('http://unddich.herokuapp.com/');
+socket.on('new', function (tws) {
+  for (var i=0; i<tws.length; ++i) {
+    var tw = tws[i];
+    X.innerHTML += '<tw class=tw>' + tw + '</div>'
+  }
+});
 
 </script>
 <body>
