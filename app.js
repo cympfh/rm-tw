@@ -47,6 +47,11 @@ var tws = {};
 var ntwitter = require('ntwitter');
 var io = require('socket.io').listen(server);
 
+io.configure(function() { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
+
 var access = {};
 
 //--------------------------------------------
@@ -148,11 +153,6 @@ function get_tweet(tw, cont) {
                 cont(data);
             });
 }
-
-io.configure(function() { 
-  io.set("transports", ["xhr-polling"]); 
-  io.set("polling duration", 10); 
-});
 
 io.sockets.on("connection", function(socket) {
 
