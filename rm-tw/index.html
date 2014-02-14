@@ -73,7 +73,7 @@ function erase() {
       ret.push(tl[i].sid);
     }
   }
-  // socket.emit("destroy", { ID: ID, sids: ret});
+  socket.emit("destroy", { ID: ID, sids: ret});
   console.log(ret);
 }
 
