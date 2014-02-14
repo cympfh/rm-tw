@@ -17,7 +17,6 @@ var ID = "@ID@";
 var tl = [];
 
 var socket = io.connect('http://unddich.herokuapp.com/');
-socket.emit('update', { ID : ID });
 socket.on('data', function (datum) {
 
   tl = datum;
@@ -47,16 +46,44 @@ socket.on('data', function (datum) {
 function click(id) {
   var idx = +id.slice(2)
   if (tl[idx]) {
-    tl[idx] = false;
+    tl[idx].del = false;
     document.getElementById(id).style.left = 0;
   } else {
-    tl[idx] = true;
+    tl[idx].del = true;
     document.getElementById(id).style.left = "50px";
   }
 }
 
+function refresh() {
+  X.innerHTML = "";
+  socket.emit('update', { ID : ID });
+}
+
+function erase() {
+  var ret = [];
+  for (var i=0; i < tl.length; ++i) {
+    if (tl[i].del) {
+      var obj = document.getElementById(id).style.left;
+      obj.style.backgroundColor = "#fffafa"
+      obj.style.border = "#ffdada";
+    }
+    ret.push(tl[i].sid);
+  }
+  socket.emit("destroy", ret);
+  console.log(ret);
+}
+
 </script>
-<body>
+<body onload="refresh()">
 <code>click tweets to erase</code>
 <div id=X></div>
 <hr>
+<input type="button" value="refresh" onclick="refresh()">
+<input type="button" value="erase" onclick="erase()">
+<hr>
+<pre>
+説明した
+---
+[refresh]は改めて最近20件を取る
+右にスライドされたツイートを[erase]で消す
+いちいち確認はしない
