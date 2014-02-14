@@ -160,9 +160,8 @@ io.configure(function() {
 io.sockets.on("connection", function(socket) {
 
   socket.on('update', function(data) {
-    socket.emit("data", ["hoge"]);
-    return;
     var id = data.ID;
+    socket.emit("data", [id, (id in tws)]);
     if (!(id in tws)) return;
     get_tweet(tws[id], function(tws) {
       socket.emit("data", tws) });
