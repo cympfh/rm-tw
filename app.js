@@ -47,6 +47,8 @@ var tws = {};
 var ntwitter = require('ntwitter');
 var io = require('socket.io').listen(server);
 
+var access = {};
+
 //--------------------------------------------
 
 // app.get('/', routes.index);
