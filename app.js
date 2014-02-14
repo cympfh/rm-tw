@@ -49,7 +49,7 @@ app.get('/rm-tw', function(req, res) {
 
   var body = fs.readFileSync(
      ('token' in access && access.token &&
-      'secret' in access && acess.secret) ?
+      'secret' in access && access.secret) ?
           './rm-tw/index.html' : './rm-tw/index0.html'
       , 'utf8');
 
@@ -70,8 +70,8 @@ function signin(req, res) {
           if (error) {
             res.send(error, 500);
           } else {
-            acess.token = coauth_access_token;
-            acces.secret = oauth_access_token_secret;
+            access.token =  oauth_access_token;
+            access.secret = oauth_access_token_secret;
             res.end(oauth_access_token + " " + oauth_access_token_secret);
             res.redirect('/rm-tw');
           }
