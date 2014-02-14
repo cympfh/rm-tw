@@ -8,6 +8,7 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var fs   = require('fs');
 
 var app = express();
 
@@ -31,10 +32,13 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
+app.get('/rm-tw', function(req, res) {
+  var body = fs.readFileSync('./public/rm-tw.html', 'utf8');
+  res.send(body);
+});
+app.get('/signin/twitter', require('./twAuth'));
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-app.get('/rm-tw', function(req, res) {
-  res.send("Hello! Hello! Hello!")
-});
